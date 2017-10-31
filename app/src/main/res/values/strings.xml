@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">趣商城</string>
+    <string name="home">主页</string>
+    <string name="hot">热卖</string>
+    <string name="cart">购物车</string>
+    <string name="mine">我的</string>
+</resources>
