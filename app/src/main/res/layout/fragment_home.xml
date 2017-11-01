@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -11,27 +10,31 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"/>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
 
-    <!--<com.daimajia.slider.library.SliderLayout-->
-        <!--android:id="@+id/slider"-->
-        <!--android:layout_width="match_parent"-->
-        <!--app:pager_animation="Accordion"-->
-        <!--app:auto_cycle="true"-->
-        <!--app:indicator_visibility="visible"-->
-        <!--app:pager_animation_span="1100"-->
-        <!--android:layout_height="180dp"/>-->
+        <com.zz.funshop.widget.CustomViewpager
+            android:id="@+id/home_head_vpager"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
 
+        <LinearLayout
+            android:id="@+id/home_ll_porint"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:gravity="center"
+            android:orientation="horizontal">
 
+        </LinearLayout>
 
+    </FrameLayout>
 
-    <!--<android.support.v7.widget.RecyclerView-->
-        <!--android:id="@+id/recyclerview"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="10dp"-->
-        <!--&gt;-->
-
-
-    <!--</android.support.v7.widget.RecyclerView>-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/home_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp" />
 
 </LinearLayout>

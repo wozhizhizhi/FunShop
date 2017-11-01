@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.view.WindowManager;
 
-import com.hunter.fastandroid.app.BaseApplication;
+import com.zz.funshop.app.BaseApplication;
 
 /**
  * 像素转换工具
