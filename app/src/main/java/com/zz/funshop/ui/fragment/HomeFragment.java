@@ -207,6 +207,7 @@ public class HomeFragment extends BaseFragment
 
     private void getBannerData()
     {
+        showProgress("Q仔，正在努力拉货,请稍后!");
         BmobQuery<BannerBean> query = new BmobQuery<BannerBean>();
         // 执行查询方法
         query.findObjects(new FindListener<BannerBean>()
@@ -216,11 +217,13 @@ public class HomeFragment extends BaseFragment
             {
                 if (e == null)
                 {
+                    hideProgress();
                     bannerBeanList = object;
                     initViewpager();
                 }
                 else
                 {
+                    hideProgress();
                     Log.d("bmob", "失败：" + e.getMessage() + "," + e.getErrorCode());
                 }
             }
