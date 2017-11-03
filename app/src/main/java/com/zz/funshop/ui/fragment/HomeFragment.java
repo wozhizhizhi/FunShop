@@ -1,16 +1,23 @@
 package com.zz.funshop.ui.fragment;
 
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
+import com.handmark.pulltorefresh.library.ILoadingLayout;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshGridView;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.zz.funshop.R;
+import com.zz.funshop.adapter.HomeAdapter;
 import com.zz.funshop.adapter.HomePagerAdapter;
 import com.zz.funshop.base.BaseFragment;
 import com.zz.funshop.mvp.modle.bean.BannerBean;
+import com.zz.funshop.mvp.modle.bean.HomeBean;
 import com.zz.funshop.utils.PixelUtils;
 import com.zz.funshop.widget.CustomViewpager;
 import com.zz.funshop.widget.TitleBar;
@@ -39,15 +46,11 @@ public class HomeFragment extends BaseFragment
 {
     @BindView(R.id.home_title_bar)
     TitleBar homeTitleBar;
-
-    @BindView(R.id.home_head_vpager)
     CustomViewpager homeHeadVpager;
-
-    @BindView(R.id.home_ll_porint)
     LinearLayout homeLlPorint;
 
-    @BindView(R.id.home_recyclerview)
-    RecyclerView homeRecyclerview;
+    @BindView(R.id.home_refreshgridview)
+    PullToRefreshListView home_refreshgridview;
 
     private List<BannerBean> bannerBeanList;
     private HomePagerAdapter homePagerAdapter;
@@ -57,6 +60,11 @@ public class HomeFragment extends BaseFragment
     // 处理 VIEWPAGER 的点击，触摸，轮播效果
     private int downX = 0;
     private long downTime = 0;
+
+    private List<HomeBean> homeBeanList;
+    private HomeAdapter homeAdapter;
+    // 是否要刷新
+    private boolean isRefreshing = false;
 
     @Override
     public int getLayoutRes()
@@ -69,8 +77,42 @@ public class HomeFragment extends BaseFragment
     {
         homeTitleBar.setTitle(R.string.home);
         homeTitleBar.setTitleSize(15);
+        initFrefreshView();
+        initHeadView();
         getBannerData();
+        getHomeData();
     }
+
+    private  void initHeadView()
+    {
+       View headView = LayoutInflater.from(getContext()).inflate(R.layout.home_banner_item , null);
+       homeHeadVpager = headView.findViewById(R.id.home_head_vpager);
+       homeLlPorint = headView.findViewById(R.id.home_ll_porint);
+       home_refreshgridview.getRefreshableView().addHeaderView(headView);
+
+    }
+
+    private void initFrefreshView()
+    {
+        home_refreshgridview.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        ILoadingLayout loadingLayoutProxy = home_refreshgridview.getLoadingLayoutProxy(false, true);//(true, false);
+        loadingLayoutProxy.setPullLabel("下拉刷新");
+        loadingLayoutProxy.setRefreshingLabel("正在刷新");
+        loadingLayoutProxy.setReleaseLabel("松开刷新");
+        loadingLayoutProxy.setLoadingDrawable(getActivity().getResources().getDrawable(R.mipmap.icon_current_ptr_flip));
+
+        home_refreshgridview.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
+        {
+            @Override
+            public void onRefresh(PullToRefreshBase<ListView> refreshView)
+            {
+                isRefreshing = true;
+                getHomeData();
+            }
+        });
+    }
+
+
 
     private void initViewpager()
     {
@@ -207,7 +249,6 @@ public class HomeFragment extends BaseFragment
 
     private void getBannerData()
     {
-        showProgress("Q仔，正在努力拉货,请稍后!");
         BmobQuery<BannerBean> query = new BmobQuery<BannerBean>();
         // 执行查询方法
         query.findObjects(new FindListener<BannerBean>()
@@ -217,12 +258,45 @@ public class HomeFragment extends BaseFragment
             {
                 if (e == null)
                 {
-                    hideProgress();
                     bannerBeanList = object;
                     initViewpager();
                 }
                 else
                 {
+                    Log.d("bmob", "失败：" + e.getMessage() + "," + e.getErrorCode());
+                }
+            }
+        });
+    }
+
+    private void getHomeData()
+    {
+        showProgress("Q仔，正在努力拉货,请稍后!");
+        BmobQuery<HomeBean> query = new BmobQuery<HomeBean>();
+        // 执行查询方法
+        query.findObjects(new FindListener<HomeBean>()
+        {
+            @Override
+            public void done(List<HomeBean> object, BmobException e)
+            {
+                if (e == null)
+                {
+                    hideProgress();
+                    homeBeanList = object;
+                    if(homeAdapter == null)
+                    {
+                        homeAdapter = new HomeAdapter(getContext() , homeBeanList);
+                        home_refreshgridview.setAdapter(homeAdapter);
+                    }
+                    else
+                    {
+                        homeAdapter.refresh(homeBeanList);
+                    }
+                    completedRefresh();
+                }
+                else
+                {
+                    completedRefresh();
                     hideProgress();
                     Log.d("bmob", "失败：" + e.getMessage() + "," + e.getErrorCode());
                 }
@@ -230,5 +304,14 @@ public class HomeFragment extends BaseFragment
         });
     }
 
+    //刷新完成
+    private void completedRefresh()
+    {
+        if (isRefreshing)
+        {
+            home_refreshgridview.onRefreshComplete();
+            isRefreshing = false;
+        }
+    }
 
 }
