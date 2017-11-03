@@ -16,7 +16,7 @@ import com.zz.funshop.R;
 public class ImageLoadUtils
 {
 
-    public static final int DEFAULT_PLACEHOLDER_RESID = R.mipmap.ic_launcher;
+    public static final int DEFAULT_PLACEHOLDER_RESID = R.mipmap.default_image;
 
     public static void loadImage(Context context, String imageUrl, int resId, ImageView imageView)
     {

@@ -14,6 +14,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.zz.funshop.R;
 import com.zz.funshop.adapter.HomeAdapter;
+import com.zz.funshop.adapter.HomeFuAdapter;
 import com.zz.funshop.adapter.HomePagerAdapter;
 import com.zz.funshop.base.BaseFragment;
 import com.zz.funshop.mvp.modle.bean.BannerBean;
@@ -62,9 +63,10 @@ public class HomeFragment extends BaseFragment
     private long downTime = 0;
 
     private List<HomeBean> homeBeanList;
-    private HomeAdapter homeAdapter;
+    private HomeFuAdapter homeAdapter;
     // 是否要刷新
     private boolean isRefreshing = false;
+    private ListView mList;
 
     @Override
     public int getLayoutRes()
@@ -88,7 +90,8 @@ public class HomeFragment extends BaseFragment
        View headView = LayoutInflater.from(getContext()).inflate(R.layout.home_banner_item , null);
        homeHeadVpager = headView.findViewById(R.id.home_head_vpager);
        homeLlPorint = headView.findViewById(R.id.home_ll_porint);
-       home_refreshgridview.getRefreshableView().addHeaderView(headView);
+       mList = home_refreshgridview.getRefreshableView();
+       mList.addHeaderView(headView);
 
     }
 
@@ -285,8 +288,8 @@ public class HomeFragment extends BaseFragment
                     homeBeanList = object;
                     if(homeAdapter == null)
                     {
-                        homeAdapter = new HomeAdapter(getContext() , homeBeanList);
-                        home_refreshgridview.setAdapter(homeAdapter);
+                        homeAdapter = new HomeFuAdapter(mList , homeBeanList);
+                        mList.setAdapter(homeAdapter);
                     }
                     else
                     {
