@@ -14,7 +14,7 @@ import butterknife.BindView;
 
 public class HotFragment extends BaseFragment
 {
-    @BindView(R.id.home_title_bar)
+    @BindView(R.id.hot_title_bar)
     TitleBar homeTitleBar;
 
     @Override

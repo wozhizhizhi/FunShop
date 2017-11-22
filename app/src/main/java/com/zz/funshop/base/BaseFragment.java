@@ -43,7 +43,8 @@ public abstract class BaseFragment extends Fragment implements IBaseView
             {
                 parent.removeView(mLayoutView);
             }
-        } else
+        }
+        else
         {
             mLayoutView = getCreateView(inflater, container);
             ButterKnife.bind(this, mLayoutView);
