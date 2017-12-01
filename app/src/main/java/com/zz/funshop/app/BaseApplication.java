@@ -19,9 +19,9 @@ public class BaseApplication extends Application
         Bmob.initialize(this, "ba7db8e796c1a55b256e93aa5e9b6ef1");
     }
 
-    public static BaseApplication getInstance() {
+    public static BaseApplication getInstance()
+    {
         return mInstance;
     }
-
 
 }
